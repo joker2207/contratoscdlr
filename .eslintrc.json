@@ -1,0 +1,22 @@
+{
+    "env": {
+      "browser": true,
+      "worker": true
+    },
+    "globals": {
+      "XLSX": "readonly"
+    },
+    "rules": {
+      "no-restricted-globals": ["error", "event", "fdescribe", "fit"]
+    },
+    "overrides": [
+      {
+        "files": ["src/worker.js"],
+        "rules": {
+          "no-undef": "off",
+          "no-restricted-globals": "off"
+        }
+      }
+    ]
+  }
+  
