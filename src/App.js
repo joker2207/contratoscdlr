@@ -39,6 +39,7 @@ function App() {
     nuevaeps: true,
     mutual: true
   });
+  const [epsOptions, setEpsOptions] = useState([]);
 
   useEffect(() => {
     if (window.Worker) {
@@ -46,10 +47,13 @@ function App() {
       workerInstance.onmessage = (e) => {
         setContracts(prevContracts => [...prevContracts, ...e.data]);
         setLoading(false);
+        // Update EPS options
+        const options = Object.keys(fileInputs).filter(folder => fileInputs[folder].length > 0);
+        setEpsOptions(options);
       };
       setWorker(workerInstance);
     }
-  }, []);
+  }, [fileInputs]);
 
   const handleFileSelect = (files, folder) => {
     setFileInputs(prevInputs => ({
@@ -89,25 +93,27 @@ function App() {
     }
   };
 
-  const handleSearch = (query) => {
-    const filteredResults = contracts.map(contract => {
-      const filteredData = contract.data.map(row => {
-        const rowString = row.join(' ');
-        const queryIndex = rowString.toLowerCase().indexOf(query.toLowerCase());
-        if (queryIndex !== -1) {
-          return {
-            row,
-            highlighted: row.map(cell => cell.toString().toLowerCase().includes(query.toLowerCase()))
-          };
-        }
-        return null;
-      }).filter(item => item !== null);
+  const handleSearch = (query, selectedEps) => {
+    const filteredResults = contracts
+      .filter(contract => selectedEps === '' || contract.folder === selectedEps)
+      .map(contract => {
+        const filteredData = contract.data.map(row => {
+          const rowString = row.join(' ');
+          const queryIndex = rowString.toLowerCase().indexOf(query.toLowerCase());
+          if (queryIndex !== -1) {
+            return {
+              row,
+              highlighted: row.map(cell => cell.toString().toLowerCase().includes(query.toLowerCase()))
+            };
+          }
+          return null;
+        }).filter(item => item !== null);
 
-      return filteredData.length > 0 ? {
-        ...contract,
-        data: filteredData
-      } : null;
-    }).filter(contract => contract);
+        return filteredData.length > 0 ? {
+          ...contract,
+          data: filteredData
+        } : null;
+      }).filter(contract => contract);
 
     setResults(filteredResults);
   };
@@ -135,7 +141,7 @@ function App() {
         </div>
         <button className="action-button" onClick={handleLoadContracts}>Cargar Información</button>
         {loading && <p className="loading-text">Cargando contratos...</p>}
-        <SearchBar onSearch={handleSearch} />
+        <SearchBar onSearch={handleSearch} epsOptions={epsOptions} />
         <div className="results-container">
           {results.map((result, index) => (
             <div key={index}>
@@ -170,3 +176,4 @@ function App() {
 }
 
 export default App;
+

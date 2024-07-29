@@ -112,7 +112,7 @@ h1 {
   margin-bottom: 20px;
 }
 
-.search-bar input[type="text"] {
+.search-bar input[type="text"], .search-bar select {
   width: 100%;
   max-width: 600px;
   padding: 10px;
@@ -161,7 +161,7 @@ table {
 
 th, td {
   padding: 15px;
-  border: 2px solid #00796b; /* Verde para las líneas de la tabla */
+  border: 3px solid #00796b; /* Verde para las líneas de la tabla */
   text-align: left;
 }
 
@@ -170,7 +170,7 @@ th {
   color: white;
 }
 
-td.highlight {
+td.highlight, .file-name.highlight, .folder-name.highlight, .service-value.highlight {
   background-color: #ffeb3b; /* Amarillo para resaltar el valor */
   font-weight: bold; /* Resaltar texto */
 }
@@ -181,10 +181,26 @@ tr.highlight td {
 }
 
 tr:hover {
-  background-color: #e0f2f1; /* Verde claro al pasar el cursor */
+  background-color: #b3e5fc; /* Azul claro al pasar el cursor */
 }
 
 /* Hover Effects */
 .eps-uploader:hover {
-  background-color: #c8e6c9; /* Verde claro en hover */
+  background-color: #b3e5fc; /* Azul claro en hover */
+}
+
+.file-name, .folder-name, .service-value {
+  font-weight: bold;
+  color: #004d40; /* Verde oscuro para el nombre del archivo y el folder */
+}
+
+.file-name.highlight, .folder-name.highlight, .service-value.highlight {
+  background-color: #ffeb3b; /* Amarillo para resaltar el texto */
+}
+
+/* Responsive Table */
+@media (max-width: 768px) {
+  table, th, td {
+    font-size: 14px; /* Reduce el tamaño de fuente en pantallas pequeñas */
+  }
 }
