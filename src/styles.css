@@ -31,12 +31,13 @@ h1 {
 
 /* Container */
 .container {
-  max-width: 1200px;
+  max-width: 100%;
   margin: 20px auto;
   padding: 20px;
   background-color: #ffffff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
+  overflow-x: auto; /* Habilita el scroll horizontal si es necesario */
 }
 
 /* EPS Uploaders */
@@ -51,6 +52,12 @@ h1 {
 .eps-uploader {
   flex: 1 1 200px;
   text-align: center;
+  border: 2px solid #004d40; /* Verde oscuro */
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
 }
 
 .eps-uploader label {
@@ -59,6 +66,10 @@ h1 {
   margin-bottom: 10px;
   text-transform: uppercase;
   color: #004d40; /* Verde oscuro para el texto */
+}
+
+.eps-uploader.loaded {
+  background-color: #e0f2f1; /* Verde claro cuando se carga la carpeta */
 }
 
 /* PGP Filter */
@@ -137,6 +148,11 @@ h1 {
 }
 
 /* Table Styles */
+.table-container {
+  width: 100%;
+  overflow-x: auto; /* Permite el scroll horizontal para la tabla */
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -144,8 +160,8 @@ table {
 }
 
 th, td {
-  padding: 10px;
-  border: 1px solid #ddd;
+  padding: 15px;
+  border: 2px solid #00796b; /* Verde para las líneas de la tabla */
   text-align: left;
 }
 
@@ -155,9 +171,20 @@ th {
 }
 
 td.highlight {
-  background-color: #c8e6c9; /* Verde claro para resaltar */
+  background-color: #ffeb3b; /* Amarillo para resaltar el valor */
+  font-weight: bold; /* Resaltar texto */
+}
+
+tr.highlight td {
+  background-color: #c8e6c9; /* Verde claro para la fila resaltada */
+  font-weight: bold; /* Resaltar texto */
 }
 
 tr:hover {
-  background-color: #f1f1f1;
+  background-color: #e0f2f1; /* Verde claro al pasar el cursor */
+}
+
+/* Hover Effects */
+.eps-uploader:hover {
+  background-color: #c8e6c9; /* Verde claro en hover */
 }

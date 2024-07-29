@@ -7,21 +7,24 @@ self.onmessage = async (e) => {
   let allContracts = [];
   let seenContracts = new Set();
 
-  for (const file of files) {
+  // Procesa archivos en paralelo
+  await Promise.all(Array.from(files).map(async (file) => {
     const fileName = file.webkitRelativePath.toLowerCase();
 
     // Filtrar archivos basados en los estados de los filtros
     const shouldInclude = (pgp && fileName.includes('pgp')) || (evento && !fileName.includes('pgp'));
 
     if (file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || file.type === 'application/vnd.ms-excel') {
-      if (shouldInclude) {
-        if (!seenContracts.has(fileName)) {
-          seenContracts.add(fileName);
-          const data = await file.arrayBuffer();
-          const workbook = XLSX.read(data, { type: 'array' });
-          workbook.SheetNames.forEach(sheetName => {
-            const sheet = workbook.Sheets[sheetName];
-            const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+      if (shouldInclude && !seenContracts.has(fileName)) {
+        seenContracts.add(fileName);
+        const data = await file.arrayBuffer();
+        const workbook = XLSX.read(data, { type: 'array' });
+
+        workbook.SheetNames.forEach(sheetName => {
+          const sheet = workbook.Sheets[sheetName];
+          const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+          if (json.length > 0) {
             const headers = json[0] || [];
             const dataWithoutHeaders = json.slice(1);
 
@@ -31,11 +34,11 @@ self.onmessage = async (e) => {
               headers: headers,
               data: dataWithoutHeaders
             });
-          });
-        }
+          }
+        });
       }
     }
-  }
+  }));
 
   self.postMessage(allContracts);
 };
