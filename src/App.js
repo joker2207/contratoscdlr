@@ -144,8 +144,8 @@ function App() {
         <div className="results-container">
           {results.map((result, index) => (
             <div key={index}>
-              <h3 className="folder-name">{result.folder.toUpperCase()}</h3>
-              <h4 className="file-name">File: {result.fileName}</h4>
+              <h3>Folder: {result.folder}</h3>
+              <h4>File: {result.fileName}</h4>
               <table>
                 <thead>
                   <tr>
@@ -178,5 +178,7 @@ function App() {
 }
 
 export default App;
+
+
 
 
