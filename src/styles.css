@@ -8,7 +8,7 @@ body {
 
 header {
   text-align: center;
-  background-color: #004d40; /* Verde oscuro */
+  background-color: #004d40;
   padding: 20px;
   color: white;
 }
@@ -21,12 +21,12 @@ header {
 }
 
 .logo:hover {
-  transform: scale(1.1); /* Zoom en el hover */
+  transform: scale(1.1);
 }
 
 h1 {
   margin: 10px 0;
-  color: #ffffff; /* Blanco para el título */
+  color: #ffffff;
 }
 
 /* Container */
@@ -37,7 +37,7 @@ h1 {
   background-color: #ffffff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  overflow-x: auto; /* Habilita el scroll horizontal si es necesario */
+  overflow-x: auto;
 }
 
 /* EPS Uploaders */
@@ -52,7 +52,7 @@ h1 {
 .eps-uploader {
   flex: 1 1 200px;
   text-align: center;
-  border: 2px solid #004d40; /* Verde oscuro */
+  border: 2px solid #004d40;
   padding: 20px;
   border-radius: 8px;
   background-color: #ffffff;
@@ -65,11 +65,11 @@ h1 {
   font-weight: bold;
   margin-bottom: 10px;
   text-transform: uppercase;
-  color: #004d40; /* Verde oscuro para el texto */
+  color: #004d40;
 }
 
 .eps-uploader.loaded {
-  background-color: #e0f2f1; /* Verde claro cuando se carga la carpeta */
+  background-color: #e0f2f1;
 }
 
 /* PGP Filter */
@@ -88,7 +88,7 @@ h1 {
   width: 200px;
   margin: 0 auto;
   padding: 10px;
-  background-color: #00796b; /* Verde */
+  background-color: #00796b;
   color: white;
   border: none;
   border-radius: 5px;
@@ -100,8 +100,8 @@ h1 {
 }
 
 .action-button:hover {
-  background-color: #004d40; /* Verde más oscuro */
-  transform: scale(1.05); /* Zoom en el hover */
+  background-color: #004d40;
+  transform: scale(1.05);
 }
 
 /* Search Bar */
@@ -117,14 +117,14 @@ h1 {
   max-width: 600px;
   padding: 10px;
   margin-bottom: 10px;
-  border: 2px solid #00796b; /* Verde */
+  border: 2px solid #00796b;
   border-radius: 5px;
   font-size: 16px;
 }
 
 .search-bar button {
   padding: 10px 20px;
-  background-color: #00796b; /* Verde */
+  background-color: #00796b;
   color: white;
   border: none;
   border-radius: 5px;
@@ -135,22 +135,22 @@ h1 {
 }
 
 .search-bar button:hover {
-  background-color: #004d40; /* Verde más oscuro */
-  transform: scale(1.05); /* Zoom en el hover */
+  background-color: #004d40;
+  transform: scale(1.05);
 }
 
 /* Loading Text */
 .loading-text {
   text-align: center;
   font-size: 18px;
-  color: #00796b; /* Verde */
+  color: #00796b;
   margin-bottom: 20px;
 }
 
 /* Table Styles */
 .table-container {
   width: 100%;
-  overflow-x: auto; /* Permite el scroll horizontal para la tabla */
+  overflow-x: auto;
 }
 
 table {
@@ -161,46 +161,50 @@ table {
 
 th, td {
   padding: 15px;
-  border: 3px solid #00796b; /* Verde para las líneas de la tabla */
+  border: 3px solid #00796b;
   text-align: left;
 }
 
 th {
-  background-color: #004d40; /* Verde oscuro */
+  background-color: #004d40;
   color: white;
 }
 
-td.highlight, .file-name.highlight, .folder-name.highlight, .service-value.highlight {
-  background-color: #ffeb3b; /* Amarillo para resaltar el valor */
-  font-weight: bold; /* Resaltar texto */
+td.highlight {
+  background-color: #ffeb3b;
+  font-weight: bold;
 }
 
 tr.highlight td {
-  background-color: #c8e6c9; /* Verde claro para la fila resaltada */
-  font-weight: bold; /* Resaltar texto */
+  background-color: #c8e6c9;
+  font-weight: bold;
 }
 
 tr:hover {
-  background-color: #b3e5fc; /* Azul claro al pasar el cursor */
+  background-color: #b3e5fc;
 }
 
-/* Hover Effects */
-.eps-uploader:hover {
-  background-color: #b3e5fc; /* Azul claro en hover */
-}
-
-.file-name, .folder-name, .service-value {
+/* Folder Name Styling */
+.folder-name {
   font-weight: bold;
-  color: #004d40; /* Verde oscuro para el nombre del archivo y el folder */
+  text-transform: uppercase;
+  background-color: #ffeb3b;
+  padding: 10px;
+  margin-bottom: 10px;
+  color: #004d40;
+  border-radius: 5px;
+  border: 2px solid #004d40;
 }
 
-.file-name.highlight, .folder-name.highlight, .service-value.highlight {
-  background-color: #ffeb3b; /* Amarillo para resaltar el texto */
+/* File Name Styling */
+.file-name {
+  font-weight: bold;
+  color: #004d40;
 }
 
 /* Responsive Table */
 @media (max-width: 768px) {
   table, th, td {
-    font-size: 14px; /* Reduce el tamaño de fuente en pantallas pequeñas */
+    font-size: 14px;
   }
 }

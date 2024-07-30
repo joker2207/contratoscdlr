@@ -47,7 +47,6 @@ function App() {
       workerInstance.onmessage = (e) => {
         setContracts(prevContracts => [...prevContracts, ...e.data]);
         setLoading(false);
-        // Update EPS options
         const options = Object.keys(fileInputs).filter(folder => fileInputs[folder].length > 0);
         setEpsOptions(options);
       };
@@ -78,7 +77,7 @@ function App() {
 
   const handleLoadContracts = () => {
     setLoading(true);
-    setContracts([]); // Clear previous contracts
+    setContracts([]);
     for (const folder of Object.keys(fileInputs)) {
       if (fileInputs[folder].length > 0) {
         worker.postMessage({
@@ -145,8 +144,8 @@ function App() {
         <div className="results-container">
           {results.map((result, index) => (
             <div key={index}>
-              <h3>Folder: {result.folder}</h3>
-              <h4>File: {result.fileName}</h4>
+              <h3 className="folder-name">{result.folder.toUpperCase()}</h3>
+              <h4 className="file-name">File: {result.fileName}</h4>
               <table>
                 <thead>
                   <tr>
@@ -158,11 +157,14 @@ function App() {
                 <tbody>
                   {result.data.map(({ row, highlighted }, rowIndex) => (
                     <tr key={rowIndex}>
-                      {row.map((cell, cellIndex) => (
-                        <td key={cellIndex} className={highlighted[cellIndex] ? 'highlight' : ''}>
-                          {cell}
-                        </td>
-                      ))}
+                      {row.map((cell, cellIndex) => {
+                        const formattedCell = typeof cell === 'number' ? Math.round(cell).toString() : cell;
+                        return (
+                          <td key={cellIndex} className={highlighted[cellIndex] ? 'highlight' : ''}>
+                            {formattedCell}
+                          </td>
+                        );
+                      })}
                     </tr>
                   ))}
                 </tbody>
@@ -176,4 +178,5 @@ function App() {
 }
 
 export default App;
+
 

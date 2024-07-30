@@ -7,11 +7,8 @@ self.onmessage = async (e) => {
   let allContracts = [];
   let seenContracts = new Set();
 
-  // Procesa archivos en paralelo
   await Promise.all(Array.from(files).map(async (file) => {
     const fileName = file.webkitRelativePath.toLowerCase();
-
-    // Filtrar archivos basados en los estados de los filtros
     const shouldInclude = (pgp && fileName.includes('pgp')) || (evento && !fileName.includes('pgp'));
 
     if (file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || file.type === 'application/vnd.ms-excel') {
