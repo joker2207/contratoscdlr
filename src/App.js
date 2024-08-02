@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Route, Routes, Link, Navigate } from 'react-router-dom';
 import SearchBar from './components/SearchBar';
 import EPSUploader from './components/EPSUploader';
+import CopagoCalculator from './components/CopagoCalculator';
 import './styles.css';
 import logo from './logo.png';
 
@@ -13,10 +15,13 @@ function App() {
     coosalud2024: [],
     magisterio: [],
     nuevaeps: [],
-    mutual: []
+    mutual: [],
+    iss2011: [],
+    soat2024: []
   });
   const [contracts, setContracts] = useState([]);
   const [results, setResults] = useState([]);
+  const [selectedResults, setSelectedResults] = useState([]); // Cambiar a un array para mantener todas las filas seleccionadas
   const [loading, setLoading] = useState(false);
   const [worker, setWorker] = useState(null);
   const [pgpFilters, setPgpFilters] = useState({
@@ -27,7 +32,9 @@ function App() {
     coosalud2024: true,
     magisterio: true,
     nuevaeps: true,
-    mutual: true
+    mutual: true,
+    iss2011: true,
+    soat2024: true
   });
   const [eventoFilters, setEventoFilters] = useState({
     coosalud: true,
@@ -37,7 +44,9 @@ function App() {
     coosalud2024: true,
     magisterio: true,
     nuevaeps: true,
-    mutual: true
+    mutual: true,
+    iss2011: true,
+    soat2024: true
   });
   const [epsOptions, setEpsOptions] = useState([]);
 
@@ -123,62 +132,71 @@ function App() {
         <img src={logo} alt="Logo" className="logo" />
         <h1>Buscador de Contratos</h1>
       </header>
-      <div className="container">
-        <div className="eps-uploaders">
-          {Object.keys(fileInputs).map((folder) => (
-            <EPSUploader
-              key={folder}
-              label={folder}
-              onFileSelect={handleFileSelect}
-              onFilterChange={handleFilterChange}
-              filters={{
-                pgp: pgpFilters[folder],
-                evento: eventoFilters[folder]
-              }}
-            />
-          ))}
-        </div>
-        <button className="action-button" onClick={handleLoadContracts}>Cargar Información</button>
-        {loading && <p className="loading-text">Cargando contratos...</p>}
-        <SearchBar onSearch={handleSearch} epsOptions={epsOptions} />
-        <div className="results-container">
-          {results.map((result, index) => (
-            <div key={index}>
-              <h3>Folder: {result.folder}</h3>
-              <h4>File: {result.fileName}</h4>
-              <table>
-                <thead>
-                  <tr>
-                    {result.headers.map((header, headerIndex) => (
-                      <th key={headerIndex}>{header}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {result.data.map(({ row, highlighted }, rowIndex) => (
-                    <tr key={rowIndex}>
-                      {row.map((cell, cellIndex) => {
-                        const formattedCell = typeof cell === 'number' ? Math.round(cell).toString() : cell;
-                        return (
-                          <td key={cellIndex} className={highlighted[cellIndex] ? 'highlight' : ''}>
-                            {formattedCell}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+      <nav>
+        <ul className="nav-list">
+          <li className="nav-item"><Link to="/">Home</Link></li>
+          <li className="nav-item"><Link to="/copago">Copago</Link></li>
+          {/* Puedes agregar más elementos de navegación aquí */}
+        </ul>
+      </nav>
+      <Routes>
+        <Route path="/" element={
+          <div className="container">
+            <div className="eps-uploaders">
+              {Object.keys(fileInputs).map((folder) => (
+                <EPSUploader
+                  key={folder}
+                  label={folder}
+                  onFileSelect={handleFileSelect}
+                  onFilterChange={handleFilterChange}
+                  filters={{
+                    pgp: pgpFilters[folder],
+                    evento: eventoFilters[folder]
+                  }}
+                />
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
+            <button className="action-button" onClick={handleLoadContracts}>Cargar Información</button>
+            {loading && <p className="loading-text">Cargando contratos...</p>}
+            <SearchBar onSearch={handleSearch} epsOptions={epsOptions} />
+            <div className="results-container">
+              {results.map((result, index) => (
+                <div key={index}>
+                  <h3>Folder: {result.folder}</h3>
+                  <h4>File: {result.fileName}</h4>
+                  <table>
+                    <thead>
+                      <tr>
+                        {result.headers.map((header, headerIndex) => (
+                          <th key={headerIndex}>{header}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {result.data.map(({ row, highlighted }, rowIndex) => (
+                        <tr key={rowIndex} onClick={() => setSelectedResults([ ...selectedResults, { row, headers: result.headers, folder: result.folder } ])}>
+                          {row.map((cell, cellIndex) => {
+                            const formattedCell = typeof cell === 'number' ? Math.round(cell).toString() : cell;
+                            return (
+                              <td key={cellIndex} className={highlighted[cellIndex] ? 'highlight' : ''}>
+                                {formattedCell}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ))}
+            </div>
+          </div>
+        } />
+        <Route path="/copago" element={<CopagoCalculator selectedResults={selectedResults} />} />
+        <Route path="*" element={<Navigate to="/" />} /> {/* Redireccionar a Home */}
+      </Routes>
     </div>
   );
 }
 
 export default App;
-
-
-
-
