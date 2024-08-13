@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import { FaTrashAlt } from 'react-icons/fa'; // Importar el ícono de la papelera de reciclaje desde react-icons/fa
 
 const CopagoCalculator = ({ selectedResults }) => {
   const [selectedLevel, setSelectedLevel] = useState('');
-  const [copago, setCopago] = useState(null);
-  const [selectedProcedureValue, setSelectedProcedureValue] = useState(null);
+  const [totalCopago, setTotalCopago] = useState(0);
+  const [procedureSelections, setProcedureSelections] = useState([]);
 
   const levels = {
     a: { percentage: 0.115, max: 337999 },
@@ -15,27 +16,50 @@ const CopagoCalculator = ({ selectedResults }) => {
     setSelectedLevel(e.target.value);
   };
 
-  const handleValueClick = (value) => {
+  const handleValueClick = (value, columnName) => {
     if (isNaN(value)) {
       alert('Seleccione bien el valor');
     } else {
-      setSelectedProcedureValue(Math.round(parseFloat(value)));
+      const roundedValue = customRound(parseFloat(value));
+      setProcedureSelections(prevSelections => [
+        ...prevSelections, 
+        { value: roundedValue, percentage: 100, columnName }  // Default percentage to 100%
+      ]);
     }
   };
 
-  const roundToNearestHundred = (value) => {
-    return Math.round(value / 100) * 100;
+  const customRound = (value) => {
+    const remainder = value % 100;
+    if (remainder < 50) {
+      return value - remainder; // Redondea hacia abajo
+    } else {
+      return value + (100 - remainder); // Redondea hacia arriba
+    }
   };
 
-  const calculateCopago = () => {
-    if (selectedProcedureValue !== null && selectedLevel) {
+  const calculateTotalCopago = () => {
+    if (procedureSelections.length > 0 && selectedLevel) {
       const level = levels[selectedLevel];
-      let copagoValue = selectedProcedureValue * level.percentage;
-      if (copagoValue > level.max) {
-        copagoValue = level.max;
-      }
-      setCopago(roundToNearestHundred(copagoValue));
+      let sumCopagos = procedureSelections.reduce((acc, selection) => {
+        let adjustedValue = selection.value * (selection.percentage / 100);
+        let copagoValue = adjustedValue * level.percentage;
+        if (copagoValue > level.max) {
+          copagoValue = level.max;
+        }
+        return acc + copagoValue;
+      }, 0);
+      setTotalCopago(customRound(sumCopagos));
     }
+  };
+
+  const handlePercentageChange = (index, newPercentage) => {
+    const newSelections = [...procedureSelections];
+    newSelections[index].percentage = newPercentage;
+    setProcedureSelections(newSelections);
+  };
+
+  const handleDeleteSelection = (index) => {
+    setProcedureSelections(prevSelections => prevSelections.filter((_, i) => i !== index));
   };
 
   return (
@@ -55,17 +79,34 @@ const CopagoCalculator = ({ selectedResults }) => {
               {selectedResults.map((result, index) => (
                 <tr key={index}>
                   {result.row.map((cell, cellIndex) => (
-                    <td key={cellIndex} onClick={() => handleValueClick(cell)}>
-                      {Math.round(cell)}
+                    <td key={cellIndex} onClick={() => handleValueClick(cell, result.headers[cellIndex])}>
+                      ${customRound(Math.round(cell)).toLocaleString()} {/* Formato con signo de peso */}
                     </td>
                   ))}
                 </tr>
               ))}
             </tbody>
           </table>
-          <p className="selected-value">
-            Valor seleccionado: <span>{selectedProcedureValue !== null ? selectedProcedureValue : 'Ninguno'}</span>
-          </p>
+          <div className="selected-values">
+            {procedureSelections.map((selection, index) => (
+              <div key={index} className="procedure-selection">
+                <span>{selection.columnName}: ${selection.value.toLocaleString()}</span> {/* Muestra el nombre de la columna y el valor */}
+                <select 
+                  value={selection.percentage} 
+                  onChange={(e) => handlePercentageChange(index, parseInt(e.target.value))}
+                >
+                  <option value={100}>100%</option>
+                  <option value={60}>60%</option>
+                  {/* Puedes agregar más opciones de porcentaje si es necesario */}
+                </select>
+                <FaTrashAlt 
+                  className="delete-icon" 
+                  onClick={() => handleDeleteSelection(index)} 
+                  title="Eliminar este copago" 
+                /> {/* Icono de papelera de reciclaje */}
+              </div>
+            ))}
+          </div>
           <div className="copago-controls">
             <select onChange={handleLevelChange} value={selectedLevel} className="select-level">
               <option value="">Seleccionar Nivel</option>
@@ -73,12 +114,12 @@ const CopagoCalculator = ({ selectedResults }) => {
               <option value="b">Nivel B</option>
               <option value="c">Nivel C</option>
             </select>
-            <button onClick={calculateCopago} className="calculate-button">Calcular Copago</button>
+            <button onClick={calculateTotalCopago} className="calculate-button">Calcular Copago Total</button>
           </div>
-          {copago !== null && (
+          {totalCopago !== 0 && (
             <div className="copago-result">
-              <p>Copago: <strong>{copago}</strong></p>
-              {copago >= levels[selectedLevel].max && <p>Tope máximo para cobrar</p>}
+              <p>Copago Total: <strong>${totalCopago.toLocaleString()}</strong></p> {/* Formato con signo de peso */}
+              {totalCopago >= levels[selectedLevel].max && <p>Tope máximo para cobrar alcanzado</p>}
             </div>
           )}
         </div>
